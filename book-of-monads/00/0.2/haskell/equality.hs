@@ -17,14 +17,16 @@ renderTuple (a, b) =
 
 compareEqual =
   putStrLn ("Comparing " ++ renderTuple oneTuple ++ " " ++ renderTuple sameTuple)
-  >>  if oneTuple === sameTuple
-      then putStrLn "Equal"
-      else putStrLn "Different"
+  >>
+    if oneTuple === sameTuple
+    then putStrLn "Equal"
+    else putStrLn "Different"
 
 compareDifferent =
   putStrLn ("Comparing " ++ renderTuple oneTuple ++ " " ++ renderTuple differentTuple)
-  >>  if oneTuple === differentTuple
-      then putStrLn "Equal"
-      else putStrLn "Different"
+  >>
+    if oneTuple === differentTuple
+    then putStrLn "Equal"
+    else putStrLn "Different"
 
 main = compareEqual >> compareDifferent
