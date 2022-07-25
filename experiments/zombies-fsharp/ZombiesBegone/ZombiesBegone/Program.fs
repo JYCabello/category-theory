@@ -30,9 +30,10 @@ let getSingle (f: 'a -> bool) (lst: 'a list) : GetSingleResult<'a> =
 //    are part of the interface, no exception throwing, nothing hidden that requires you to look inside
 //    or read the whole test suite to notice.
 // E: Exercise exceptional behaviour. There's no exceptional behaviour we have though of, if there were,
-//    we would make it part of the interface, feel free to challenge this point.
+//    we would make it part of the interface.
 // S: Simple scenarios: Every line of the pattern matching is the definition of a possible scenario,
 //    defining the domain of the function.
+// Feel free to challenge any point.
 let renderGetSingle (f: int -> bool) (lst: int list) : string =
   match getSingle f lst with
   | Found i -> $"Found the single element {i} in {lst}"
