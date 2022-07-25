@@ -36,10 +36,7 @@ object PrintableSyntax {
 import PrintableInstances._
 
 @main def hello(): Unit =
-  println("Hello world!")
-  println(msg)
   7.print
-  Cat("Garfield", 5, "orange").show
   Cat("Garfield", 5, "orange").print
+  println(Cat("Garfield", 5, "orange").show)
 
-def msg = "I was compiled by Scala 3. :)"
