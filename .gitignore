@@ -34,3 +34,4 @@ metals.sbt
 **/*.exe
 **/*.hi
 **/*.o
+**/dist-newstyle/**
