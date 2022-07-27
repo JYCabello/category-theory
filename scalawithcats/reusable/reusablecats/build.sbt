@@ -12,6 +12,6 @@ lazy val root = (project in file(".")).settings(
     // standard "effect" library (Queues, Console, Random etc.)
     "org.typelevel" %% "cats-effect-std" % "3.3.12",
     "org.typelevel" %% "munit-cats-effect-3" % "1.0.7" % Test,
-    "org.typelevel" %% "cats-effect-testing-specs2" % "1.1.1" % Test
+    "org.typelevel" %% "cats-effect-testing-specs2" % "1.3.0" % Test
   )
 )
