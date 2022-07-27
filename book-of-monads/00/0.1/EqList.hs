@@ -15,5 +15,5 @@ instance Eq a => MyEq [a] where
   (===) = eqListTail
 
 main = 
-  let result = if [1] === [1] then "Equal" else "Different" in
+  let result = if ([] :: [Int]) === [] then "Equal" else "Different" in
   printf result
