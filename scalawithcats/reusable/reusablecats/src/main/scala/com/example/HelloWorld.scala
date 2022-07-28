@@ -26,26 +26,21 @@ val func2 = (a: Int) => a * 2
 val func3 = (a: Int) => s"$a!"
 val func4: Int => String = func1.map(func2).map(func3)
 
-//case class TurboDieselInjection[R, F[_], +A](value: R => F[A])(using flatMap: FlatMap[F]) {
-//  def map[B] (f: A => B) : TurboDieselInjection[R, F, B] =
-//    TurboDieselInjection(deps => value(deps).map(f))
-//
-//  def flatMap[B] (f: A => TurboDieselInjection[R, F, B]): TurboDieselInjection[R, F, B] =
-//    val x: R => IO[Either[Int, B]] =
-//      (deps: R) =>
-//        value(deps).flatMap(either =>
-//          either.fold(
-//            e => IO.delay(Left(e)),
-//            s => f(s).value(deps)
-//          )
-//        )
-//
-//    TurboDieselInjection(x)
-//}
-case class TurboDieselInjection[R, F[_], A](value: R => F[A])(using fm: FlatMap[F]) {
-  def map[B] (f: A => B) : TurboDieselInjection[R, F, B] =
-    TurboDieselInjection(deps => value(deps).map(f))
 
-  def flatMap[B] (f: A => TurboDieselInjection[R, F, B]): TurboDieselInjection[R, F, B] =
+case class TDIKinds[R, F[_], A](value: R => F[A])(using fm: FlatMap[F]) {
+  def map[B] (f: A => B) : TDIKinds[R, F, B] =
+    TDIKinds(deps => value(deps).map(f))
+
+  def flatMap[B] (f: A => TDIKinds[R, F, B]): TDIKinds[R, F, B] =
     TurboDieselInjection((deps: R) => value(deps).flatMap((a: A) => f(a).value(deps)))
 }
+
+def rightForEven(n: Int): Either[String, Int] = if n % 2 === 0 then Right(n) else Left(n.toString)
+
+val meh: Either[String, Int] =
+  for {
+    a <- rightForEven(2)
+    b <- rightForEven(4)
+    c <- rightForEven(8)
+    result = a + b + c
+  } yield result
