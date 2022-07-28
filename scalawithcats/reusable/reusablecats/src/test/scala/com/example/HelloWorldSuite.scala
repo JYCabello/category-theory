@@ -5,6 +5,6 @@ import munit.CatsEffectSuite
 
 class HelloWorldSuite extends CatsEffectSuite {
   test("test hello world says hi") {
-    HelloWorld.say().map(assertEquals(_, "6"))
+    HelloWorld.say().map(assertEquals(_, "16!"))
   }
 }
