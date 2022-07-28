@@ -4,7 +4,7 @@ ThisBuild / scalaVersion := "3.0.0"
 lazy val root = (project in file(".")).settings(
   name := "reusablecats",
   libraryDependencies ++= Seq(
-    "org.typelevel" %% "cats-core" % "2.8.0",
+    "org.typelevel" %% "cats-core" % "2.7.0",
     // "core" module - IO, IOApp, schedulers
     // This pulls in the kernel and std modules automatically.
     "org.typelevel" %% "cats-effect" % "3.3.12",

@@ -1,7 +1,9 @@
 package com.example
 
+import cats._
 import cats.effect._
-import cats.syntax.all._
+import cats.implicits._
+import cats.syntax._
 
 implicit class CustomCatsSyntax[A](value: A) {
   implicit def io : IO[A] = IO.delay(value)
@@ -9,7 +11,6 @@ implicit class CustomCatsSyntax[A](value: A) {
 }
 
 object HelloWorld {
-  def someBanana: Option[String] = "banana".some
   def someAsyncBanana: IO[Option[String]] = "banana".someIO
-  def say(): IO[String] = "Hello Cats!".io
+  def say(): IO[String] = IO.delay("Hello Cats!")
 }
