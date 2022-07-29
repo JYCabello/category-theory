@@ -1,11 +1,12 @@
 package com.example
 
-import cats._
-import cats.effect._
-import cats.implicits._
-import cats.syntax._
-import cats.instances._
-import cats.syntax.functor._
+import cats.*
+import cats.data.Kleisli
+import cats.effect.*
+import cats.implicits.*
+import cats.syntax.*
+import cats.instances.*
+import cats.syntax.functor.*
 
 implicit class CustomCatsSyntax[A](value: A) {
   implicit def io : IO[A] = IO.delay(value)
@@ -53,6 +54,7 @@ type Effectful[A] = IO[EitherString[A]]
 
 extension [A](e: Either[String, A])
   def eff:Effectful[A] = e.io
+  def tdi[D] : TDIKinds[D, Effectful, A] = TDIKinds(_ => e.io)
 
 implicit val flatMapEitherString: FlatMap[Effectful] =
   new FlatMap[Effectful] {
@@ -79,6 +81,11 @@ implicit val flatMapEitherString: FlatMap[Effectful] =
 
 val turboDependencyInjection: TDIKinds[String, Effectful, Int] =
   for {
-    a <- TDIKinds((x: String) => rightForEven(2).eff)
-    b <- TDIKinds((x: String) => rightForEven(4).eff)
+    a <- TDIKinds((_: String) => rightForEven(2).eff)
+    b <- rightForEven(4).tdi
   } yield a + b
+
+val myKleisli: Kleisli[Effectful, String, Int] =
+  for {
+    a <- Kleisli((_: String) => rightForEven(2).eff)
+  } yield a
