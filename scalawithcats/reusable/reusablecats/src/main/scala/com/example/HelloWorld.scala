@@ -57,8 +57,6 @@ type Effectful[A] = IO[EitherString[A]]
 extension [A](e: Either[String, A])
   def eff:Effectful[A] = e.io
 
-
-
 implicit val flatMapEitherString: FlatMap[Effectful] =
   new FlatMap[Effectful] {
     def flatMap[A, B](e: Effectful[A])(f: A => Effectful[B]): Effectful[B] =
@@ -66,21 +64,25 @@ implicit val flatMapEitherString: FlatMap[Effectful] =
 
     def tailRecM[A, B](a: A)(f: A => Effectful[Either[A, B]]): Effectful[B] =
       f(a).flatMap {
-        case Left(s) => IO.delay(Left(s): EitherString[B])
+        case Left(s) => IO.delay(Left(s))
         case Right(eab) =>
           eab match {
-            case Right(b) => IO.delay(Right(b): EitherString[B])
+            case Right(b) => IO.delay(Right(b))
             case Left(a1) => tailRecM(a1)(f)
           }
       }
 
-
+    def map[A, B](e: Effectful[A])(f: A => B): Effectful[B] =
+      e.flatMap {
+        case Left(s) => IO.delay(Left(s))
+        case Right(a) => IO.delay(Right(f(a)))
+      }
   }
 
 
-//val iHateMyLife: TDIKinds[String, Effectful, Int] =
-//  for {
-//    a <- TDIKinds((x: String) => rightForEven(2).eff)
-//    b <- TDIKinds((x: String) => rightForEven(4).eff)
-//  } yield a + b
+val turboDependencyInjection: TDIKinds[String, Effectful, Int] =
+  for {
+    a <- TDIKinds((x: String) => rightForEven(2).eff)
+    b <- TDIKinds((x: String) => rightForEven(4).eff)
+  } yield a + b
 
