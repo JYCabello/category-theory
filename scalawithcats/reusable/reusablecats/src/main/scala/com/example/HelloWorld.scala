@@ -59,6 +59,7 @@ implicit val flatMapEitherString: FlatMap[Effectful] =
     def flatMap[A, B](e: Effectful[A])(f: A => Effectful[B]): Effectful[B] =
       e.flatMap((e: Either[String, A]) => e.fold[Effectful[B]](str => Left(str).io, a => f(a)))
 
+    // Not actually tailrec, need to figure this bit out.
     def tailRecM[A, B](a: A)(f: A => Effectful[Either[A, B]]): Effectful[B] =
       f(a).flatMap {
         case Left(s) => IO.delay(Left(s))
@@ -81,4 +82,3 @@ val turboDependencyInjection: TDIKinds[String, Effectful, Int] =
     a <- TDIKinds((x: String) => rightForEven(2).eff)
     b <- TDIKinds((x: String) => rightForEven(4).eff)
   } yield a + b
-
