@@ -79,7 +79,6 @@ implicit val flatMapEitherString: FlatMap[Effectful] =
       }
   }
 
-
 val turboDependencyInjection: TDIKinds[String, Effectful, Int] =
   for {
     a <- TDIKinds((x: String) => rightForEven(2).eff)
