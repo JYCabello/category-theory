@@ -14,5 +14,8 @@ lazy val root = (project in file(".")).settings(
     "org.typelevel" %% "cats-effect-std" % "3.3.12",
     "org.typelevel" %% "munit-cats-effect-3" % "1.0.7" % Test
   ),
-  scalacOptions += "-language:higherKinds"
+  scalacOptions ++= Seq(
+    "-language:higherKinds",
+    "-Ypartial-unification"
+  )
 )

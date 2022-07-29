@@ -32,7 +32,7 @@ case class TDIKinds[R, F[_], A](value: R => F[A])(using fm: FlatMap[F]) {
     TDIKinds(deps => value(deps).map(f))
 
   def flatMap[B] (f: A => TDIKinds[R, F, B]): TDIKinds[R, F, B] =
-    TurboDieselInjection((deps: R) => value(deps).flatMap((a: A) => f(a).value(deps)))
+    TDIKinds((deps: R) => value(deps).flatMap((a: A) => f(a).value(deps)))
 }
 
 def rightForEven(n: Int): Either[String, Int] = if n % 2 === 0 then Right(n) else Left(n.toString)
@@ -44,3 +44,43 @@ val meh: Either[String, Int] =
     c <- rightForEven(8)
     result = a + b + c
   } yield result
+
+import cats.instances.all._
+import cats.instances.either._
+
+
+type EitherString[A] = Either[String, A]
+type Effectful[A] = IO[EitherString[A]]
+
+
+
+extension [A](e: Either[String, A])
+  def eff:Effectful[A] = e.io
+
+
+
+implicit val flatMapEitherString: FlatMap[Effectful] =
+  new FlatMap[Effectful] {
+    def flatMap[A, B](e: Effectful[A])(f: A => Effectful[B]): Effectful[B] =
+      e.flatMap((e: Either[String, A]) => e.fold[Effectful[B]](str => Left(str).io, a => f(a)))
+
+    def tailRecM[A, B](a: A)(f: A => Effectful[Either[A, B]]): Effectful[B] =
+      f(a).flatMap {
+        case Left(s) => IO.delay(Left(s): EitherString[B])
+        case Right(eab) =>
+          eab match {
+            case Right(b) => IO.delay(Right(b): EitherString[B])
+            case Left(a1) => tailRecM(a1)(f)
+          }
+      }
+
+
+  }
+
+
+//val iHateMyLife: TDIKinds[String, Effectful, Int] =
+//  for {
+//    a <- TDIKinds((x: String) => rightForEven(2).eff)
+//    b <- TDIKinds((x: String) => rightForEven(4).eff)
+//  } yield a + b
+
