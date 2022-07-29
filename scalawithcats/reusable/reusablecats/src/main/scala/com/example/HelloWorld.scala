@@ -48,11 +48,8 @@ val meh: Either[String, Int] =
 import cats.instances.all._
 import cats.instances.either._
 
-
 type EitherString[A] = Either[String, A]
 type Effectful[A] = IO[EitherString[A]]
-
-
 
 extension [A](e: Either[String, A])
   def eff:Effectful[A] = e.io
